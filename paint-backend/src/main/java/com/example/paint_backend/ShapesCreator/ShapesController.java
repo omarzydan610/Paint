@@ -1,5 +1,9 @@
 package com.example.paint_backend.ShapesCreator;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,32 +15,36 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/shapes")
 public class ShapesController {
 
-    @PostMapping("/rectangle")
+    int shapeId = 1;
+    private List<Shapes> shapesList = new ArrayList<>();
+    private JSONArray shapesArray = new JSONArray();
+
+    @PostMapping("/create")
     public ResponseEntity<String> calculateRectangleDimensions(@RequestBody String rawRequest) {
         try {
             // Log the raw request body
             System.out.println("Received raw request: " + rawRequest);
-    
+
             // Parse the raw request into a JSONObject
             JSONObject request = new JSONObject(rawRequest);
-    
-            // System.out.println("Parsed request: " + request.toString());
-    
-            // Instantiate the Rectangle object
-            Rectangle rectangle = new Rectangle(
-                request.getInt("xEnd"),
-                request.getInt("yEnd"),
-                request.getInt("xStart"),
-                request.getInt("yStart"),
-                request.getInt("color"),
-                request.getInt("lineWidth")
-            );
-    
+            Shapes shape ;  
+            if (request.getInt("shapeId") == 0) {
+            request.put("shapeId", shapeId);
+                shape = new ShapeFactory().getShape(request.getString("shapetype"), request);
+                shapeId++;  
+            }else{
+                shape= shapesList.get(request.getInt("shapeId"));
+                shape.setEndPoints(request.getDouble("xEnd"), request.getDouble("yEnd"));
+            }
+
             // Calculate dimensions
-            rectangle.RecDemensionCalculate();
-    
-            System.out.println("Rectangle dimensions: " + rectangle.toJsonObject().toString());
-            return ResponseEntity.ok(rectangle.toJsonObject().toString());
+            shape.DemensionCalculate();
+            shapesList.add(shape);
+            JSONObject shapeJson = shape.toJsonObject();
+            shapesArray.put(shapeJson);
+
+            System.out.println("Rectangle dimensions: " + shapeJson.toString());
+            return ResponseEntity.ok(shapeJson.toString());
         } catch (Exception e) {
             e.printStackTrace();
             JSONObject errorResponse = new JSONObject();
@@ -44,8 +52,5 @@ public class ShapesController {
             return ResponseEntity.badRequest().body(errorResponse.toString());
         }
     }
-    
+
 }
-
-
-

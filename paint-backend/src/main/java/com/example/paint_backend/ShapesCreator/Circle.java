@@ -2,8 +2,9 @@ package com.example.paint_backend.ShapesCreator;
 
 import org.json.JSONObject;
 
-public class Rectangle implements Shapes {
+public class Circle implements Shapes  {
     int shapeId;
+
     double xEnd;
     double yEnd;
     double xStart;
@@ -11,11 +12,10 @@ public class Rectangle implements Shapes {
     String firstColor;
     String secondColor;
     int lineWidth;
-    double length;
-    double width;
+    double radius;
     String shapeType;
 
-    public Rectangle(JSONObject json) {
+    public Circle(JSONObject json) {
         this.shapeId = json.getInt("shapeId");
         this.xEnd = json.getDouble("xEnd");
         this.yEnd = json.getDouble("yEnd");
@@ -27,27 +27,26 @@ public class Rectangle implements Shapes {
         this.shapeType = json.getString("shapetype");
     }
     @Override
-    public void DemensionCalculate() {
-        this.length = Math.abs(xEnd - xStart);
-        this.width = Math.abs(yEnd - yStart);
-    }
-    @Override
     public void setEndPoints( double xEnd, double yEnd){
         this.xEnd = xEnd;
         this.yEnd = yEnd;
+    }   
+    @Override
+    public void DemensionCalculate() {
+        this.radius = Math.sqrt((xEnd - xStart) * (xEnd - xStart) + (yEnd - yStart) * (yEnd - yStart));
     }
     @Override
     public JSONObject toJsonObject() {
         JSONObject json = new JSONObject();
         json.put("shapeId", this.shapeId);
-        json.put("length", this.length);    
-        json.put("width", this.width);
+        json.put("radius", this.radius);
         json.put("xStart", this.xStart);
         json.put("yStart", this.yStart);
         json.put("firstColor", this.firstColor);
         json.put("secondColor", this.secondColor);
-        json.put("lineWidth", this.lineWidth);
+        json.put("lineWidth", this.lineWidth);  
         json.put("shapetype", this.shapeType);
         return json;
     }
 }
+

@@ -2,8 +2,7 @@ package com.example.paint_backend.ShapesCreator;
 
 import org.json.JSONObject;
 
-public class Rectangle implements Shapes {
-    int shapeId;
+public class Ellipse implements Shapes {
     double xEnd;
     double yEnd;
     double xStart;
@@ -11,11 +10,11 @@ public class Rectangle implements Shapes {
     String firstColor;
     String secondColor;
     int lineWidth;
-    double length;
-    double width;
+    double radiusX;
+    double radiusY;
+    int shapeId;
     String shapeType;
-
-    public Rectangle(JSONObject json) {
+    public Ellipse(JSONObject json) {
         this.shapeId = json.getInt("shapeId");
         this.xEnd = json.getDouble("xEnd");
         this.yEnd = json.getDouble("yEnd");
@@ -23,13 +22,13 @@ public class Rectangle implements Shapes {
         this.yStart = json.getDouble("yStart");
         this.firstColor = json.getString("firstColor");
         this.secondColor = json.getString("secondColor");
-        this.lineWidth = json.getInt("lineWidth");  
+        this.lineWidth = json.getInt("lineWidth");      
         this.shapeType = json.getString("shapetype");
     }
     @Override
     public void DemensionCalculate() {
-        this.length = Math.abs(xEnd - xStart);
-        this.width = Math.abs(yEnd - yStart);
+        this.radiusX = Math.abs(xEnd - xStart);
+        this.radiusY = Math.abs(yEnd - yStart);
     }
     @Override
     public void setEndPoints( double xEnd, double yEnd){
@@ -40,13 +39,13 @@ public class Rectangle implements Shapes {
     public JSONObject toJsonObject() {
         JSONObject json = new JSONObject();
         json.put("shapeId", this.shapeId);
-        json.put("length", this.length);    
-        json.put("width", this.width);
+        json.put("radiusX", this.radiusX);
+        json.put("radiusY", this.radiusY);
         json.put("xStart", this.xStart);
         json.put("yStart", this.yStart);
         json.put("firstColor", this.firstColor);
         json.put("secondColor", this.secondColor);
-        json.put("lineWidth", this.lineWidth);
+        json.put("lineWidth", this.lineWidth);  
         json.put("shapetype", this.shapeType);
         return json;
     }
